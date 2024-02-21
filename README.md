@@ -29,8 +29,12 @@ We:
 - Profit!
 
 # Configuration...
-> **Note**
-> Configuration file location is a bit peculiar due to the macOS sandboxing system and the way it determines which programs can access which files. The chosen directory for config is `/Library/wsfun/`. This way, all programs (and most importantly windowserver) can access config data.
+<div style="display: flex; flex-direction: row; align-items: center;">
+    <img src=".readme/info.png" alt="Logo" width="25" style="margin-right: 4px; margin-bottom: 10px;"/>
+    <p style="text-decoration: none;">Configuration file location is a bit peculiar due to the macOS sandboxing system and the way it determines which programs can access which files. The chosen directory for config is `/Library/wsfun/`. This way, all programs (and most importantly windowserver) can access config data.</p>
+</div>
+
+
 
 Example Config File:
 ```ini
