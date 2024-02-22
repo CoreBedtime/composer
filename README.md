@@ -8,6 +8,9 @@
 # What is this?
 The "Composer" serves as an augmentation to the OSX Desktop Environment. The primary objective is to grant users more control over the aesthetics and even functionality of their OSX desktop experience.
 
+# Tested on...
+- MacOS Ventura (Apple Silicon)
+
 # How to install? (requires XCode)
 - Turn off SIP
     - Restart your computer in Recovery mode.
@@ -31,19 +34,20 @@ We:
 # Configuration...
 > Configuration file location is a bit peculiar due to the macOS sandboxing system and the way it determines which programs can access which files. The chosen directory for config is `/Library/wsfun/`. This way, all programs (and most importantly windowserver) can access config data.
 
+Configs are written in the TOML format . An example of every configuration option can be found below.
 
-
-Example Config File:
+Example Configuration:
 ```ini
 [menubar]
 height = 55
 enable_png = true
-apple_rgba = [0,0,0,255,255]
+apple_rgba = [255,255,255,255]
 text_rgba = [255,255,255,255]
 
 [window]
 sharp_corner = true
 hide_shadow = false
+decor_width = 20
 decor = true
 ```
 

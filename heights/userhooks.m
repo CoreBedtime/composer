@@ -114,8 +114,53 @@ void SwapRedBlue(IOSurfaceRef surface)
 }
 
 long (*ServerShadowSurfaceOld)();
+
+#include <CoreGraphics/CoreGraphics.h>
+
+// Draw a nine-slice image
+void DrawNineSlice(CGContextRef context, CGImageRef image, CGRect rect, NSEdgeInsets insets) 
+{
+    CGFloat leftInset = insets.left;
+    CGFloat rightInset = insets.right;
+    CGFloat topInset = insets.top;
+    CGFloat bottomInset = insets.bottom;
+    
+    CGSize imageSize = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
+    
+    // Draw top left corner
+    CGContextDrawImage(context, CGRectMake(rect.origin.x, rect.origin.y, leftInset, topInset), CGImageCreateWithImageInRect(image, CGRectMake(0, imageSize.height - topInset, leftInset, topInset)));
+    
+    // Draw top edge
+    CGContextDrawImage(context, CGRectMake(rect.origin.x + leftInset, rect.origin.y, rect.size.width - leftInset - rightInset, topInset), CGImageCreateWithImageInRect(image, CGRectMake(leftInset, imageSize.height - topInset, imageSize.width - leftInset - rightInset, topInset)));
+    
+    // Draw top right corner
+    CGContextDrawImage(context, CGRectMake(rect.origin.x + rect.size.width - rightInset, rect.origin.y, rightInset, topInset), CGImageCreateWithImageInRect(image, CGRectMake(imageSize.width - rightInset, imageSize.height - topInset, rightInset, topInset)));
+    
+    // Draw left edge
+    CGContextDrawImage(context, CGRectMake(rect.origin.x, rect.origin.y + topInset, leftInset, rect.size.height - topInset - bottomInset), CGImageCreateWithImageInRect(image, CGRectMake(0, topInset, leftInset, imageSize.height - topInset - bottomInset)));
+    
+    // Draw center
+    CGContextDrawImage(context, CGRectMake(rect.origin.x + leftInset, rect.origin.y + topInset, rect.size.width - leftInset - rightInset, rect.size.height - topInset - bottomInset), CGImageCreateWithImageInRect(image, CGRectMake(leftInset, topInset, imageSize.width - leftInset - rightInset, imageSize.height - topInset - bottomInset)));
+    
+    // Draw right edge
+    CGContextDrawImage(context, CGRectMake(rect.origin.x + rect.size.width - rightInset, rect.origin.y + topInset, rightInset, rect.size.height - topInset - bottomInset), CGImageCreateWithImageInRect(image, CGRectMake(imageSize.width - rightInset, topInset, rightInset, imageSize.height - topInset - bottomInset)));
+    
+    // Draw bottom left corner
+    CGContextDrawImage(context, CGRectMake(rect.origin.x, rect.origin.y + rect.size.height - bottomInset, leftInset, bottomInset), CGImageCreateWithImageInRect(image, CGRectMake(0, 0, leftInset, bottomInset)));
+    
+    // Draw bottom edge
+    CGContextDrawImage(context, CGRectMake(rect.origin.x + leftInset, rect.origin.y + rect.size.height - bottomInset, rect.size.width - leftInset - rightInset, bottomInset), CGImageCreateWithImageInRect(image, CGRectMake(leftInset, 0, imageSize.width - leftInset - rightInset, bottomInset)));
+    
+    // Draw bottom right corner
+    CGContextDrawImage(context, CGRectMake(rect.origin.x + rect.size.width - rightInset, rect.origin.y + rect.size.height - bottomInset, rightInset, bottomInset), CGImageCreateWithImageInRect(image, CGRectMake(imageSize.width - rightInset, 0, rightInset, bottomInset)));
+}
+
+CGImageRef shadow_png = NULL; 
 long ServerShadowSurfaceNew(void * shadow_ptr /* WSShadow:: */, void * param_1,void * param_2)
 {
+    if (!shadow_png)
+        shadow_png = ImageFromFile("/Library/wsfun/shadow.png");
+
     // Create a new iOSurface
     long k = ServerShadowSurfaceOld(shadow_ptr, param_1, param_2);
     struct ServerShadow * shadow = (struct ServerShadow *)shadow_ptr;
@@ -146,13 +191,7 @@ long ServerShadowSurfaceNew(void * shadow_ptr /* WSShadow:: */, void * param_1,v
 
     if (WindowDecorations)
     {
-        CGContextSetRGBFillColor(context, 255.0 / 255, 255.0 / 255, 255.0 / 255, 1.0); // shadow color
-        CGContextFillRect(context, CGRectInset(real_window_rect, -12, -12));
-        
-        CGContextSetRGBFillColor(context, 48.0 / 255, 138.0 / 255, 255.0 / 255, 1.0); // shadow color
-        CGContextFillRect(context, CGRectInset(real_window_rect, -6, -6));
-        
-
+        DrawNineSlice(context, shadow_png, CGRectInset(real_window_rect, -WindowOutwardWidth, -WindowOutwardWidth), NSEdgeInsetsMake(WindowOutwardWidth, WindowOutwardWidth, WindowOutwardWidth, WindowOutwardWidth)); // Example insets)
         CGContextClearRect(context, real_window_rect); // final clear of the REAL window rect.
     }
     

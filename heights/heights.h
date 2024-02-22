@@ -25,6 +25,7 @@ extern int MenubarTextRGBA[4];
 extern bool WindowSharpCorners;
 extern bool WindowHideShadow;
 extern bool WindowDecorations;
+extern int WindowOutwardWidth;
 
 #define __height MenubarHeight
 

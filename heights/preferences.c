@@ -17,6 +17,7 @@ bool MenubarHide = false;
 int MenubarAppleRGBA[4] = {0, 0, 0, 255};
 int MenubarTextRGBA[4] = {255, 255, 255, 255};
 
+int WindowOutwardWidth = 12;
 bool WindowSharpCorners = true;
 bool WindowHideShadow = false;
 bool WindowDecorations = true;
@@ -66,40 +67,35 @@ void InstantiateGlobalSettings(void)
     if (menubar) 
     {
         toml_datum_t height = toml_int_in(menubar, "height");
-        if (!height.ok) { goto cleanup; }
-        MenubarHeight = height.u.i;
+        if (height.ok) { MenubarHeight = height.u.i; }
 
         toml_datum_t backgroundPath = toml_bool_in(menubar, "enable_png");
-        if (!backgroundPath.ok) { goto cleanup; }
-        MenubarGraphic = backgroundPath.u.b;
+        if (backgroundPath.ok) { MenubarGraphic = backgroundPath.u.b; }
 
         toml_datum_t hide_menubar = toml_bool_in(menubar, "hide_menubar");
-        if (!hide_menubar.ok) { goto cleanup; }
-        MenubarHide = hide_menubar.u.b;
+        if (hide_menubar.ok) { MenubarHide = hide_menubar.u.b; }
 
         toml_array_t *appleRGBA = toml_array_in(menubar, "apple_rgba");
-        ParseColorArray(appleRGBA, MenubarAppleRGBA);
+        if (appleRGBA) { ParseColorArray(appleRGBA, MenubarAppleRGBA); }
 
         toml_array_t *textRGBA = toml_array_in(menubar, "text_rgba");
-        ParseColorArray(textRGBA, MenubarTextRGBA);
-        
+        if (textRGBA) { ParseColorArray(textRGBA, MenubarTextRGBA); }
     }
 
     toml_table_t* window = toml_table_in(conf, "window");
-    if (menubar) 
+    if (window) 
     {
         toml_datum_t sharp = toml_bool_in(window, "sharp_corner");
-        if (!sharp.ok) { goto cleanup; }
-        WindowSharpCorners = sharp.u.b;
-
+        if (sharp.ok) { WindowSharpCorners = sharp.u.b; }
+        
         toml_datum_t shadow = toml_bool_in(window, "hide_shadow");
-        if (!shadow.ok) { goto cleanup; }
-        WindowHideShadow = shadow.u.b;
-
+        if (shadow.ok) { WindowHideShadow = shadow.u.b;  }
+        
         toml_datum_t decor = toml_bool_in(window, "decor");
-        if (!decor.ok) { goto cleanup; }
-        WindowDecorations = decor.u.b;
+        if (decor.ok) { WindowDecorations = decor.u.b; }
 
+        toml_datum_t width = toml_int_in(window, "decor_width");
+        if (width.ok) { WindowOutwardWidth = width.u.i; }
     }
 
 cleanup:
