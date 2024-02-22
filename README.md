@@ -51,5 +51,13 @@ decor_width = 20
 decor = true
 ```
 
+# Ideas (Todo??)
+- Dock hooks
+    - Hide Dock
+    - Position Dock
+
+- General hooks
+    - A way to make ALL tasks respect `window.sharp_corner`
+
 # Where is this going?
 Preferably, reaching a level of customization akin to the diversity offered by custom shells on Windows and the extensive desktop options available on Linux. Imagine a world where macOS users have the freedom to tailor most aspects of their desktop environment to suit their unique preferences, just like their counterparts on other operating systems.

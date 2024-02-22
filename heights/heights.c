@@ -25,9 +25,6 @@ void InstantiateGlobalSettings(void);
 
 void __attribute__((__visibility__("default"))) LoadFunction(GumInterceptor *interceptor)
 {
-    // if (strstr(getprogname(), __maintarget) != NULL)
-    {
-        InstantiateGlobalSettings();
-        InstantiateClientHooks(interceptor);
-    }
+    InstantiateGlobalSettings();
+    InstantiateClientHooks(interceptor);
 }
