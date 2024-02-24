@@ -191,7 +191,7 @@ long ServerShadowSurfaceNew(void * shadow_ptr /* WSShadow:: */, void * param_1,v
 
     if (WindowDecorations)
     {
-        DrawNineSlice(context, shadow_png, CGRectInset(real_window_rect, -WindowOutwardWidth, -WindowOutwardWidth), NSEdgeInsetsMake(WindowOutwardWidth, WindowOutwardWidth, WindowOutwardWidth, WindowOutwardWidth)); // Example insets)
+        DrawNineSlice(context, shadow_png, CGRectInset(real_window_rect, -WindowOutwardWidth, -WindowOutwardWidth), NSEdgeInsetsMake(WindowOutwardWidth + WindowIndwardWidth, WindowOutwardWidth + WindowIndwardWidth, WindowOutwardWidth + WindowIndwardWidth, WindowOutwardWidth + WindowIndwardWidth)); // Example insets)
         CGContextClearRect(context, real_window_rect); // final clear of the REAL window rect.
     }
     
@@ -306,12 +306,16 @@ void (*GumInterceptorEndTransactionFunc)(GumInterceptor * self);
 
 void ClientHook(void * func, void * new, void ** old)
 {
-    GumInterceptorBeginTransactionFunc(magic);
-    GumInterceptorReplaceFunc(magic, (gpointer)func, new, NULL, old);
-    GumInterceptorEndTransactionFunc(magic);
+    if (func != NULL) 
+    { 
+        GumInterceptorBeginTransactionFunc(magic);
+        GumInterceptorReplaceFunc(magic, (gpointer)func, new, NULL, old);
+        GumInterceptorEndTransactionFunc(magic);
+    }
 }
 
 void InstantiateClientHooks(GumInterceptor *interceptor)
+
 {
     // Setup hooking
     magic = interceptor;
@@ -330,12 +334,9 @@ void InstantiateClientHooks(GumInterceptor *interceptor)
         ClientHook(sr_resolve_symbol(skylight, "__ZN8WSShadowC1EP11__IOSurface19WSShadowDescription"), ServerShadowSurfaceNew, &ServerShadowSurfaceOld); 
 
         // Menubar
-        ClientHook(sr_resolve_symbol(skylight, "__ZL40configure_menu_bar_layers_for_backgroundP17PKGMenuBarContextb"), MenubarLayersNew, &MenubarLayersOld);
+        ClientHook(sr_resolve_symbol(skylight, "__ZL40configure_menu_bar_layers_for_backgroundP17PKGMenuBarContextb"), MenubarLayersNew, &MenubarLayersOld); // Needs fixup on sonoma
         ClientHook(sr_resolve_symbol(skylight, "__ZL25menu_bar_bounds_for_spaceP19PKGManagedMenuSpace"), HeightNew, &HeightOld); 
-        ClientHook(sr_resolve_symbol(skylight, "_SLSGetDisplayMenubarHeight"), ClientRenderHeightNew, NULL); 
-
-        // Window Drag
-        ClientHook(sr_resolve_symbol(skylight, "_set_bleed_for_backdrop_array"), BackdropNew, &BackdropOld); // scary one
+        ClientHook(sr_resolve_symbol(skylight, "_SLSGetDisplayMenubarHeight"), ClientRenderHeightNew, NULL);
     }
 
     // Do magic with objc runtime + frida

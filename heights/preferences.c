@@ -17,6 +17,7 @@ bool MenubarHide = false;
 int MenubarAppleRGBA[4] = {0, 0, 0, 255};
 int MenubarTextRGBA[4] = {255, 255, 255, 255};
 
+int WindowIndwardWidth = 0;
 int WindowOutwardWidth = 12;
 bool WindowSharpCorners = true;
 bool WindowHideShadow = false;
@@ -96,6 +97,9 @@ void InstantiateGlobalSettings(void)
 
         toml_datum_t width = toml_int_in(window, "decor_width");
         if (width.ok) { WindowOutwardWidth = width.u.i; }
+
+        toml_datum_t inward = toml_int_in(window, "decor_width_in");
+        if (inward.ok) { WindowIndwardWidth = inward.u.i; }
     }
 
 cleanup:

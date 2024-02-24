@@ -26,6 +26,7 @@ extern bool WindowSharpCorners;
 extern bool WindowHideShadow;
 extern bool WindowDecorations;
 extern int WindowOutwardWidth;
+extern int WindowIndwardWidth;
 
 #define __height MenubarHeight
 
