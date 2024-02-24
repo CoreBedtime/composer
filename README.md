@@ -48,6 +48,7 @@ text_rgba = [255,255,255,255]
 sharp_corner = true
 hide_shadow = false
 decor_width = 20
+decor_width_in = 20
 decor = true
 ```
 
